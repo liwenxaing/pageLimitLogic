@@ -25,8 +25,7 @@
 
 
     <script>
-
-        /**
+ /**
          * JS 封装好的返回当前页码的周围页码
          * 可以参考JS实例 在后台进行代码的编写
          * 这里只是写个测试JS的 这代码应该在后台编写
@@ -46,7 +45,6 @@
                 }else if (obj.page >= obj.bigPageNum - 1){
                     if(obj.isType === "next"){
                         obj.page = obj.bigPageNum;
-                        console.log("页面"+  obj.page)
                     }
                     innerForFun();
                 } else{
@@ -57,7 +55,6 @@
                             if (j < cur) initPageArr[j] =obj.page - k;
                             if (j ===cur) initPageArr[cur] = obj.page;
                             if (j > cur){
-                                console.log(obj.page + o,obj.bigPageNum);
                                 if ( obj.page +o <= obj.bigPageNum){
                                     initPageArr[j] = obj.page +o;
                                     if (o <  cur) o++;
@@ -66,10 +63,7 @@
                                 }
                             }
                         }
-                        console.log("------------------")
                     }
-
-
                 }
                 /**
                  * 到最后的时候 返回最后的相关页码
@@ -97,15 +91,16 @@
         //初始化
 
         var page = 1;
-
+        var btnNum = 20;
+        var bigPageNum = 60;
 
         var res  = calcPageNums({
             // 当前页
              page: 1,
             // 模拟总页数
-             btnNum: 11,
+             btnNum: btnNum,
             // 展示的按钮数量
-             bigPageNum: 20,
+             bigPageNum: bigPageNum,
              isType: "prev"
          });
 
@@ -118,8 +113,8 @@
              page ++;
              var res = calcPageNums({
                  page: page,
-                 btnNum: 11,
-                 bigPageNum: 20,
+                 btnNum: btnNum,
+                 bigPageNum: bigPageNum,
                  isType: "prev"
              });
              render(res);
@@ -129,8 +124,8 @@
              page --;
              var res  = calcPageNums({
                  page: page,
-                 btnNum: 11,
-                 bigPageNum: 20,
+                 btnNum: btnNum,
+                 bigPageNum: bigPageNum,
                  isType: "prev"
              });
              render(res);
@@ -146,15 +141,18 @@
                  if(page <= 1){
                      page = 1
                  }
+
                  if((res[i]) === page){
                      li.className = "active";
                  }
-                 if (page >= 20){
-                      page = 20;
+
+                 if (page >= bigPageNum){
+                      page = bigPageNum;
                  }
                  ul.appendChild(li);
              }
          }
+
 
     </script>
 
