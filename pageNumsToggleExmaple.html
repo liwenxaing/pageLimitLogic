@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>按钮分页显示当前页数计算实例</title>
+</head>
+
+<style>
+
+.active{
+    color:red;
+}
+
+</style>
+<body>
+
+
+    <button id="inc">
+        上一页
+    </button>
+
+    <button id="app">
+            下一页
+    </button>
+
+
+    <script>
+
+        /**
+         * JS 封装好的返回当前页码的周围页码
+         * 可以参考JS实例 在后台进行代码的编写
+         * 这里只是写个测试JS的 这代码应该在后台编写
+         * 返回一个实体 承载数据
+         * 避免变量污染 使用了 自调用函数 ES5
+         **/
+
+         (function (win) {
+            function calcPageNums(obj){
+                var initPageArr = [];
+                if (obj.isType === "prev"){
+                    if (obj.page <= 1) obj.page = 1;
+                }
+                if (obj.page <= obj.btnNum){
+                    if (obj.bigPageNum < obj.btnNum)  obj.btnNum = obj.bigPageNum;
+                    for (var i = 0 ; i < obj.btnNum; i++)  initPageArr[i] = i+1;
+                }else if (obj.page >= obj.bigPageNum - 1){
+                    if(obj.isType === "next"){
+                        obj.page = obj.bigPageNum;
+                        console.log("页面"+  obj.page)
+                    }
+                    innerForFun();
+                } else{
+                    var cur = Math.floor(Number(obj.btnNum / 2));
+                    initPageArr = [];
+                    if(obj.page < obj.bigPageNum - 1){
+                        for(var j = 0,k = cur,o = 1 ; j < obj.btnNum; j++,k--){
+                            if (j < cur) initPageArr[j] =obj.page - k;
+                            if (j ===cur) initPageArr[cur] = obj.page;
+                            if (j > cur){
+                                console.log(obj.page + o,obj.bigPageNum);
+                                if ( obj.page +o <= obj.bigPageNum){
+                                    initPageArr[j] = obj.page +o;
+                                    if (o <  cur) o++;
+                                }else{
+                                    innerForFun();
+                                }
+                            }
+                        }
+                        console.log("------------------")
+                    }
+
+
+                }
+                /**
+                 * 到最后的时候 返回最后的相关页码
+                 */
+                function innerForFun(){
+                    for (var i = 0 ; i < obj.bigPageNum ; i++) {
+                        if (i < obj.btnNum){
+                            initPageArr[i] = obj.bigPageNum-(i);
+                        }
+                    };
+                    initPageArr.reverse();
+                }
+                return initPageArr;
+            }
+            win.calcPageNums = calcPageNums;
+        })(window)
+
+
+
+         var next = document.getElementById("app");
+         var prev = document.getElementById("inc");
+         var ul = document.createElement("ul");
+         var body = document.body || document.documentElement;
+
+        //初始化
+
+        var page = 1;
+
+
+        var res  = calcPageNums({
+            // 当前页
+             page: 1,
+            // 模拟总页数
+             btnNum: 11,
+            // 展示的按钮数量
+             bigPageNum: 20,
+             isType: "prev"
+         });
+
+
+        render(res);
+        body.appendChild(ul);
+
+
+        next.addEventListener("click",function () {
+             page ++;
+             var res = calcPageNums({
+                 page: page,
+                 btnNum: 11,
+                 bigPageNum: 20,
+                 isType: "prev"
+             });
+             render(res);
+         },false);
+
+         prev.addEventListener("click",function () {
+             page --;
+             var res  = calcPageNums({
+                 page: page,
+                 btnNum: 11,
+                 bigPageNum: 20,
+                 isType: "prev"
+             });
+             render(res);
+         },false);
+
+
+
+         function render(res){
+             ul.innerHTML = "";
+             for (var i = 0 ; i < res.length ; i++){
+                 var li = document.createElement("li");
+                 li.innerText = (res[i]);
+                 if((res[i]) === page){
+                     li.className = "active";
+                 }
+                 if (page >= 20){
+                      page = 20;
+                 }
+                 ul.appendChild(li);
+             }
+         }
+
+    </script>
+
+
+
+</body>
+</html>
